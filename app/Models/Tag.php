@@ -17,5 +17,5 @@ class Tag extends Model
         'kinds',
 
     ];
-    
+
 }

@@ -23,25 +23,27 @@ class TodoController extends Controller
   function add(ClientRequest $request)
   {
 
-    $todo = new Todo();
-    $todo->text = $request->text;
-    $todo->tag_id = $request->kinds;
-    $todo->user_id = Auth::id();
-    $todo->save();
-
     $tag = new Tag();
     $tag->kinds = $request->kinds;
     $tag->save();
 
+    $todo = new Todo();
+    $todo->text = $request->text;
+    $todo->tag_id = $tag->id;
+    $todo->user_id = Auth::id();
+    $todo->save();
     return redirect('/');
   }
 
   function edit(Request $request, $id)
   {
     $todo = Todo::find($id);
-    unset($todo['_token']);
     $todo->text = $request->text;
     $todo->save();
+
+    $tag = Tag::find($todo->tag_id);
+    $tag->kinds = $request->kinds;
+    $tag->save();
     return redirect('/');
   }
 
@@ -49,6 +51,9 @@ class TodoController extends Controller
   {
     $todo = Todo::find($id);
     $todo->delete();
+
+    $tag = Tag::find($todo->tag_id);
+    $tag->delete();
     return redirect('/');
   }
 
@@ -60,13 +65,27 @@ class TodoController extends Controller
 
   public function search(Request $request)
   {
-    $search = $request->search;
-    $query = Todo::search($search);
-    $todos = $query->select('text', 'created_at', 'tag_id')->paginate(20);
-
     $tags = Tag::all();
 
+
+    $search = $request->search;
+    $query = Todo::query();
+    if (!empty($search)) {
+      $query->where('text', 'LIKE', "%{$search}%");
+    }
+    $todos = $query->get();
+
+
+    $kinds = $request->kinds;
+    if (!empty($kinds)) {
+      $tag_id = Tag::where('kinds', "$kinds")->pluck('id');
+
+      $query->wherein('tag_id', $tag_id);
+    }
+
+    $todos = $query->get();
+
     $user = '「' .  Auth::user()->name . '」でログイン中';
-    return view('search', compact('todos', 'user', 'tags'));
+    return view('/search', compact('todos', 'user', 'tags'));
   }
 }

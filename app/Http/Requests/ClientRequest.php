@@ -22,7 +22,7 @@ class ClientRequest extends FormRequest
    */ public function rules()
   {
     return [
-      'text' => 'required',
+      'text' => ['required', 'max:20']
     ];
   }
   public function messages()

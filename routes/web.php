@@ -13,19 +13,8 @@ Route::post('/delete/{id}', [TodoController::class, 'delete'])->middleware(['aut
 Route::get('/search', [TodoController::class, 'search'])->middleware(['auth'])->name('search');
 
 
-
-
 Route::get('/logout', [TodoController::class, 'getLogout'])->name('logout');
 
 
-/**Route::prefix() // 頭に contacts をつける
-    ->middleware(['auth']) // 認証
-    ->name('todos.') // ルート名
-    ->controller(TodoController::class) // コントローラ指定(laravel9から)
-    ->group(
-        function () { // グループ化
-            Route::get('/', 'index')->name('index'); // 名前つきルート
 
-        }
-    ); **/
 require __DIR__ . '/auth.php';

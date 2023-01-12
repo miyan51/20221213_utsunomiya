@@ -33,11 +33,11 @@
           @csrf
           <input type="text" class="input-add" name="text" />
           <select name="kinds" class='tag'>
-            <option value="1">家事</option>
-            <option value="2">勉強</option>
-            <option value="3">運動</option>
-            <option value="4">食事</option>
-            <option value="5">移動</option>
+            <option value="家事">家事</option>
+            <option value="勉強">勉強</option>
+            <option value="運動">運動</option>
+            <option value="食事">食事</option>
+            <option value="移動">移動</option>
           </select>
           <input class="button-add" type="submit" value="追加" />
         </form>
@@ -50,6 +50,7 @@
             <th>更新</th>
             <th>削除</th>
           </tr>
+
           @foreach ($todos as $todo)
           <tr>
             <td>
@@ -61,14 +62,22 @@
                 <input type="text" class="input-update" value="{{ $todo->text }}" name="text" />
               </td>
               <td>
-                <select name="tag" class='tag'>
-                  <option value="1" @if ( $todo->tag_id===1 ) selected @endif>家事</option>
-                  <option value="2" @if ( $todo->tag_id===2 ) selected @endif>勉強</option>
-                  <option value="3" @if ( $todo->tag_id===3 ) selected @endif>運動</option>
-                  <option value="4" @if ( $todo->tag_id===4 ) selected @endif>食事</option>
-                  <option value="5" @if ( $todo->tag_id===5 ) selected @endif>移動</option>
+
+                <?php
+                foreach ($tags as $tag)
+                  if ($todo->tag_id == $tag->id) {
+                    $tt = $tag->kinds;
+                  }
+                ?>
+                <select name="kinds" class='tag'>
+                  <option value="家事" @if ( $tt=='家事' ) selected @endif>家事</option>
+                  <option value="勉強" @if ( $tt=='勉強' ) selected @endif>勉強</option>
+                  <option value="運動" @if ( $tt=='運動' ) selected @endif>運動</option>
+                  <option value="食事" @if ( $tt=='食事' ) selected @endif>食事</option>
+                  <option value="移動" @if ( $tt=='移動' ) selected @endif>移動</option>
                 </select>
               </td>
+
               <td>
                 <button class="button-update">更新</button>
               </td>
