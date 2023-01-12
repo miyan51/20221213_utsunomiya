@@ -17,6 +17,9 @@ class TodoController extends Controller
     $todos = Todo::all();
     $tags = Tag::all();
 
+    $user_id = Auth::user()->id;
+    $todos = $todos->wherein('user_id', $user_id);
+
     return view('index', compact('todos', 'user', 'tags'));
   }
 
@@ -79,11 +82,12 @@ class TodoController extends Controller
     $kinds = $request->kinds;
     if (!empty($kinds)) {
       $tag_id = Tag::where('kinds', "$kinds")->pluck('id');
-
       $query->wherein('tag_id', $tag_id);
     }
 
     $todos = $query->get();
+    $user_id = Auth::user()->id;
+    $todos = $todos->wherein('user_id', $user_id);
 
     $user = '「' .  Auth::user()->name . '」でログイン中';
     return view('/search', compact('todos', 'user', 'tags'));
